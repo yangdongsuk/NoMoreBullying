@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useRef, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid"; // 최신 버전의 Heroicons
 
-export default function ChatExperience() {
+const ChatExperienceContent = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -64,11 +64,6 @@ export default function ChatExperience() {
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !isComposing) {
       event.preventDefault();
-    }
-  };
-
-  const handleKeyUp = (event) => {
-    if (event.key === "Enter" && !isComposing) {
       handleSubmit(event);
     }
   };
@@ -133,7 +128,6 @@ export default function ChatExperience() {
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
             onCompositionStart={handleComposition}
             onCompositionEnd={handleComposition}
             placeholder="메시지를 입력하세요..."
@@ -147,5 +141,13 @@ export default function ChatExperience() {
         </form>
       </div>
     </div>
+  );
+};
+
+export default function ChatExperience() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatExperienceContent />
+    </Suspense>
   );
 }
