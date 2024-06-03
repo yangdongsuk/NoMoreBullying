@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function EnterName() {
+const EnterNameContent = () => {
   const [name, setName] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const version = searchParams.get("version");
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (name.trim() === "") return;
-    router.push(`/chat-experience?name=${encodeURIComponent(name)}`);
+
+    const chatExperiencePath =
+      version === "deep" ? "chat-experience-deep" : "chat-experience-basic";
+    router.push(`/${chatExperiencePath}?name=${encodeURIComponent(name)}`);
   };
 
   return (
@@ -36,5 +41,13 @@ export default function EnterName() {
         </form>
       </div>
     </div>
+  );
+};
+
+export default function EnterName() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EnterNameContent />
+    </Suspense>
   );
 }

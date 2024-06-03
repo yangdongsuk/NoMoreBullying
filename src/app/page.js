@@ -21,13 +21,29 @@ export default function HomePage() {
                 alt="AI Chatbot"
                 className="h-40 w-full object-cover mb-4 rounded-t-lg"
               />
-              <h2 className="text-2xl font-bold mb-2">채팅 체험</h2>
+              <h2 className="text-2xl font-bold mb-2">기본 채팅 체험</h2>
               <p className="text-gray-700 mb-4">
-                채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요.
+                기본 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요.
               </p>
-              <Link href="/enter-name">
+              <Link href="/enter-name?version=basic">
                 <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
-                  채팅 체험 시작하기
+                  기본 채팅 체험 시작하기
+                </button>
+              </Link>
+            </div>
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <img
+                src="/images/ai_chatbot.jpg"
+                alt="AI Chatbot"
+                className="h-40 w-full object-cover mb-4 rounded-t-lg"
+              />
+              <h2 className="text-2xl font-bold mb-2">심층 채팅 체험</h2>
+              <p className="text-gray-700 mb-4">
+                심층 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요.
+              </p>
+              <Link href="/enter-name?version=deep">
+                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
+                  심층 채팅 체험 시작하기
                 </button>
               </Link>
             </div>
