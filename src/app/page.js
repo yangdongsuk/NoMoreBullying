@@ -7,17 +7,33 @@ export default function HomePage() {
   const { name } = useNameState();
   const [chatExperienceBasicPath, setChatExperienceBasicPath] = useState("");
   const [chatExperienceDeepPath, setChatExperienceDeepPath] = useState("");
-
+  const [chatExperienceVictimPath, setChatExperienceVictimPath] = useState("");
+  const [chatExperienceCounselingPath, setChatExperienceCounselingPath] =
+    useState("");
+  const [chatExperienceProgrammerPath, setChatExperienceProgrammerPath] =
+    useState("");
   useEffect(() => {
     if (name.trim() === "") {
       setChatExperienceBasicPath("/enter-name?version=basic");
       setChatExperienceDeepPath("/enter-name?version=deep");
+      setChatExperienceVictimPath("/enter-name?version=victim");
+      setChatExperienceCounselingPath("/enter-name?version=counseling");
+      setChatExperienceProgrammerPath("/enter-name?version=programmer");
     } else {
       setChatExperienceBasicPath(
         `/chat-experience-basic?name=${encodeURIComponent(name)}`
       );
       setChatExperienceDeepPath(
         `/chat-experience-deep?name=${encodeURIComponent(name)}`
+      );
+      setChatExperienceVictimPath(
+        `/chat-experience-victim?name=${encodeURIComponent(name)}`
+      );
+      setChatExperienceCounselingPath(
+        `/chat-experience-counseling?name=${encodeURIComponent(name)}`
+      );
+      setChatExperienceProgrammerPath(
+        `/chat-experience-programmer?name=${encodeURIComponent(name)}`
       );
     }
   }, [name]);
@@ -60,6 +76,27 @@ export default function HomePage() {
               description="심층 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요. (욕설 나올 가능성이 높습니다.)"
               link={chatExperienceDeepPath}
               buttonText="심층 채팅 체험 시작하기"
+            />
+            <Card
+              image="/images/ai_chatbot.jpg"
+              title="피해자 위로해주기"
+              description="학교 폭력 피해자를 채팅으로 위로해주세요."
+              link={chatExperienceVictimPath}
+              buttonText="피해자 위로 시작하기"
+            />
+            <Card
+              image="/images/ai_chatbot.jpg"
+              title="학교 폭력 상담"
+              description="학교 폭력 상담입니다. 자신의 이야기를 들려주세요."
+              link={chatExperienceCounselingPath}
+              buttonText="상담 시작하기"
+            />
+            <Card
+              image="/images/ai_chatbot.jpg"
+              title="피곤한 개발자"
+              description="대규모 장애 때매 3일간 잠을 못 잔 백엔드 개발자랑 이야기하며 행복해져보세요."
+              link={chatExperienceProgrammerPath}
+              buttonText="상담 시작하기"
             />
             <Card
               image="/images/quiz.jpg"

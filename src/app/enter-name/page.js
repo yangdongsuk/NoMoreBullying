@@ -15,11 +15,10 @@ const EnterNameContent = () => {
     if (!version) {
       router.push(`/`);
     }
-    if (version === "basic") {
-      router.push(`/chat-experience-basic?name=${encodeURIComponent(name)}`);
-    }
-    if (version === "deep") {
-      router.push(`/chat-experience-deep?name=${encodeURIComponent(name)}`);
+    if (version) {
+      router.push(
+        `/chat-experience-${version}?name=${encodeURIComponent(name)}`
+      );
     }
   };
 
