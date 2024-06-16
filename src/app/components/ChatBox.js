@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
-const ChatBox = ({ apiEndpoint }) => {
+const ChatBox = ({ apiEndpoint, title }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -79,7 +79,7 @@ const ChatBox = ({ apiEndpoint }) => {
     <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex justify-between items-center">
-          <h1 className="text-lg font-bold">학교 폭력 체험</h1>
+          <h1 className="text-lg font-bold">{title}</h1>
           <Link href="/" legacyBehavior>
             <a className="text-white bg-blue-500 hover:bg-blue-700 rounded-full px-3 py-1">
               홈페이지로
