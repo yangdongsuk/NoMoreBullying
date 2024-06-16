@@ -1,21 +1,26 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import useNameState from "@/hooks/useNameState";
 
 const EnterNameContent = () => {
-  const [name, setName] = useState("");
+  const { name, setName } = useNameState();
   const router = useRouter();
   const searchParams = useSearchParams();
   const version = searchParams.get("version");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (name.trim() === "") return;
-
-    const chatExperiencePath =
-      version === "deep" ? "chat-experience-deep" : "chat-experience-basic";
-    router.push(`/${chatExperiencePath}?name=${encodeURIComponent(name)}`);
+    if (!version) {
+      router.push(`/`);
+    }
+    if (version === "basic") {
+      router.push(`/chat-experience-basic?name=${encodeURIComponent(name)}`);
+    }
+    if (version === "deep") {
+      router.push(`/chat-experience-deep?name=${encodeURIComponent(name)}`);
+    }
   };
 
   return (
@@ -36,7 +41,7 @@ const EnterNameContent = () => {
             type="submit"
             className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
           >
-            시작하기
+            {!version ? "설정하기" : "시작하기"}
           </button>
         </form>
       </div>

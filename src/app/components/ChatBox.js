@@ -47,9 +47,10 @@ const ChatBox = ({ apiEndpoint, title }) => {
       });
 
       const data = await res.json();
+      console.log("Response from server:", data);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "bot", text: data.response },
+        { sender: "bot", text: data },
       ]);
     } catch (error) {
       console.error("Error fetching response:", error);
