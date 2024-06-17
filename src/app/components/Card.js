@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Card = ({ image, title, description, link, buttonText }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between h-full">
-      <div>
+    <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between h-full transform hover:scale-105 transition-transform duration-300 hover:bg-green-100">
+      <div className="relative">
         <img
           src={image}
           alt={title}
