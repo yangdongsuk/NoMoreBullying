@@ -19,6 +19,12 @@ const ChatBox = ({ apiEndpoint, title }) => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+  // 처음 로드될 때 포커스를 설정
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -29,7 +35,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
     if (isSubmitting || userInput.trim() === "") return;
 
     const inputText = `${name}: ${userInput.trim()}`;
-    setUserInput(""); // Clear input field
+    setUserInput("");
     setMessages((prevMessages) => [
       ...prevMessages,
       { sender: "user", text: userInput.trim() },

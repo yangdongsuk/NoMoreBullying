@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useNameState from "@/hooks/useNameState";
 
@@ -9,6 +9,13 @@ const EnterNameContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const version = searchParams.get("version");
+  const inputRef = useRef(null); // input 요소에 대한 참조 생성
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // 처음 로드될 때 input에 포커스를 설정
+    }
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,6 +37,7 @@ const EnterNameContent = () => {
         </div>
         <form onSubmit={handleSubmit} className="p-4">
           <input
+            ref={inputRef} // input 요소에 참조 할당
             type="text"
             className="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
             value={name}
