@@ -12,6 +12,7 @@ export default function HomePage() {
     counseling: "",
     programmer: "",
     girlfriend: "",
+    bully: "",
   });
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function HomePage() {
     setChatExperiencePaths({
       basic: generatePath("basic"),
       deep: generatePath("deep"),
+      bully: generatePath("bully"),
       victim: generatePath("victim"),
       counseling: generatePath("counseling"),
       programmer: generatePath("programmer"),
@@ -68,6 +70,13 @@ export default function HomePage() {
               description="심층 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요. (욕설 나올 가능성이 높습니다.)"
               link={chatExperiencePaths.deep}
               buttonText="심층 채팅 체험 시작하기"
+            />
+            <Card
+              image="/images/bully.jpg"
+              title="일진 채팅 체험"
+              description="일진 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
+              link={chatExperiencePaths.bully}
+              buttonText="일진 채팅 체험 시작하기"
             />
             <Card
               image="/images/victim.jpg"
