@@ -5,21 +5,29 @@ export async function commonHandler(req, res, selectedPrompt) {
   if (req.method === "POST") {
     const { input, name } = req.body;
 
-    console.log("Received input:", input);
+    try {
+      const stream = await handleOpenAIRequest(selectedPrompt, input, name);
 
-    // 1.jpg~12.jpg 이미지 파일 랜덤으로 선택
-    const randomImage = Math.floor(Math.random() * 12) + 1;
-    const imagePath = `/images/karina/${randomImage}.jpg`;
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      });
 
-    const result = await handleOpenAIRequest(selectedPrompt, input, name);
-    const response = {
-      text: result.data,
-      image: imagePath,
-    };
-    console.log("Result:", result);
-    console.log("Response:", response);
-    res.status(result.status).json(response);
+      for await (const part of stream) {
+        const content = part.choices[0]?.delta?.content || "";
+        if (content) {
+          res.write(`data: ${JSON.stringify(content)}\n\n`);
+        }
+      }
+
+      res.write("data: [DONE]\n\n");
+      res.end();
+    } catch (error) {
+      console.error("스트림 오류:", error);
+      res.status(500).send("서버 오류가 발생했습니다.");
+    }
   } else {
-    res.status(405).json({ message: "Method not allowed" });
+    res.status(405).send("허용되지 않은 메소드입니다.");
   }
 }

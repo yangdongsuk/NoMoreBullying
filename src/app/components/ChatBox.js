@@ -30,7 +30,6 @@ const ChatBox = ({ apiEndpoint, title }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isSubmitting || userInput.trim() === "") return;
@@ -45,6 +44,20 @@ const ChatBox = ({ apiEndpoint, title }) => {
     setIsTyping(true);
 
     try {
+      // 이미지를 가져옵니다
+      const imageRes = await fetch("/api/get-random-image");
+      const imageData = await imageRes.json();
+
+      // 새 메시지 객체를 생성하고 상태에 추가
+      const newMessage = {
+        sender: "bot",
+        text: "",
+        image: imageData.image,
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+
+      // 스트림 데이터 처리
       const res = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
@@ -53,24 +66,55 @@ const ChatBox = ({ apiEndpoint, title }) => {
         body: JSON.stringify({ input: inputText, name }),
       });
 
-      const data = await res.json();
-      console.log("Response from server:", data);
+      if (!res.ok) throw new Error("API 요청 실패");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      let accumulatedText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const content = line.slice(6).trim();
+            if (content === "[DONE]") {
+              break;
+            }
+            if (content) {
+              const parsedContent = JSON.parse(content);
+              accumulatedText += parsedContent;
+
+              setMessages((prevMessages) => {
+                const newMessages = [...prevMessages];
+                const lastMessage = newMessages[newMessages.length - 1];
+                lastMessage.text = accumulatedText;
+                return newMessages;
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("오류:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           sender: "bot",
-          text: data.text, // 서버에서 텍스트와 이미지 URL을 함께 보내줘야 합니다
-          image: data.image, // 이미지 URL
+          text: "죄송합니다. 오류가 발생했습니다.",
         },
       ]);
-    } catch (error) {
-      console.error("Error fetching response:", error);
     } finally {
       setIsTyping(false);
       setIsSubmitting(false);
+      scrollToBottom();
     }
   };
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !isComposing) {
       event.preventDefault();
@@ -113,9 +157,8 @@ const ChatBox = ({ apiEndpoint, title }) => {
                     : "bg-gray-200 text-black max-w-sm"
                 }`}
               >
-                {msg.text}
                 {msg.sender === "bot" && msg.image && (
-                  <div className="mt-2">
+                  <div className="mb-2">
                     <Image
                       src={msg.image}
                       alt="Bot response image"
@@ -125,6 +168,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
                     />
                   </div>
                 )}
+                {msg.text}
               </div>
             </div>
           ))}
