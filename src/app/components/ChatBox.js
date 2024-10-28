@@ -146,17 +146,17 @@ const ChatBox = ({ apiEndpoint, title }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex justify-between items-center">
-          <h1 className="text-lg font-bold">{title}</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+      <div className="flex flex-col w-full h-screen md:h-[600px] md:w-[400px] bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex justify-between items-center">
+          <h1 className="text-base sm:text-lg font-bold">{title}</h1>
           <Link href="/" legacyBehavior>
-            <a className="text-white bg-blue-500 hover:bg-blue-700 rounded-full px-3 py-1">
+            <a className="text-white bg-blue-500 hover:bg-blue-700 rounded-full px-2 py-1 text-sm sm:px-3 sm:py-1">
               홈페이지로
             </a>
           </Link>
         </div>
-        <div className="p-4 h-96 overflow-y-auto">
+        <div className="flex-1 p-4 overflow-y-auto">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -166,10 +166,10 @@ const ChatBox = ({ apiEndpoint, title }) => {
             >
               {msg.image ? (
                 <div
-                  className={`p-3 rounded-lg ${
+                  className={`p-2 sm:p-3 rounded-lg ${
                     msg.sender === "user"
-                      ? "bg-blue-500 text-white max-w-xs"
-                      : "bg-gray-200 text-black max-w-sm"
+                      ? "bg-blue-500 text-white max-w-[80%]"
+                      : "bg-gray-200 text-black max-w-[80%]"
                   }`}
                 >
                   <Image
@@ -177,16 +177,16 @@ const ChatBox = ({ apiEndpoint, title }) => {
                     alt="Bot response image"
                     width={200}
                     height={200}
-                    className="rounded-lg"
+                    className="rounded-lg w-full h-auto"
                   />
                 </div>
               ) : msg.text ? (
                 <div
-                  className={`p-3 rounded-lg ${
+                  className={`p-2 sm:p-3 rounded-lg ${
                     msg.sender === "user"
-                      ? "bg-blue-500 text-white max-w-xs"
-                      : "bg-gray-200 text-black max-w-sm"
-                  }`}
+                      ? "bg-blue-500 text-white max-w-[80%]"
+                      : "bg-gray-200 text-black max-w-[80%]"
+                  } break-words`}
                 >
                   {msg.text}
                 </div>
@@ -197,7 +197,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
         </div>
         <form
           onSubmit={handleSubmit}
-          className="flex items-center p-4 border-t border-gray-200"
+          className="flex items-center p-2 sm:p-4 border-t border-gray-200"
         >
           <textarea
             ref={textareaRef}
@@ -212,7 +212,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
           />
           <button
             type="submit"
-            className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 flex items-center"
+            className="ml-1 sm:ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 flex items-center"
           >
             <PaperAirplaneIcon className="w-5 h-5 transform rotate-45" />
           </button>
