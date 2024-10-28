@@ -7,7 +7,6 @@ import Image from "next/image";
 const ChatBox = ({ apiEndpoint, title }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
   const textareaRef = useRef(null);
@@ -30,6 +29,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isSubmitting || userInput.trim() === "") return;
@@ -41,21 +41,27 @@ const ChatBox = ({ apiEndpoint, title }) => {
       { sender: "user", text: userInput.trim() },
     ]);
     setIsSubmitting(true);
-    setIsTyping(true);
 
     try {
       // 이미지를 가져옵니다
       const imageRes = await fetch("/api/get-random-image");
       const imageData = await imageRes.json();
 
-      // 새 메시지 객체를 생성하고 상태에 추가
-      const newMessage = {
+      // 이미지 메시지를 분리하여 추가
+      const imageMessage = {
         sender: "bot",
-        text: "",
         image: imageData.image,
       };
 
-      setMessages((prev) => [...prev, newMessage]);
+      setMessages((prev) => [...prev, imageMessage]);
+
+      // 텍스트 메시지를 초기화하고 추가
+      const textMessage = {
+        sender: "bot",
+        text: "",
+      };
+
+      setMessages((prev) => [...prev, textMessage]);
 
       // 스트림 데이터 처리
       const res = await fetch(apiEndpoint, {
@@ -92,8 +98,16 @@ const ChatBox = ({ apiEndpoint, title }) => {
 
               setMessages((prevMessages) => {
                 const newMessages = [...prevMessages];
-                const lastMessage = newMessages[newMessages.length - 1];
-                lastMessage.text = accumulatedText;
+                // 마지막으로 추가된 봇의 텍스트 메시지를 업데이트
+                const lastMessageIndex = newMessages
+                  .slice()
+                  .reverse()
+                  .findIndex((msg) => msg.sender === "bot" && !msg.image);
+                if (lastMessageIndex !== -1) {
+                  const indexToUpdate =
+                    newMessages.length - 1 - lastMessageIndex;
+                  newMessages[indexToUpdate].text = accumulatedText;
+                }
                 return newMessages;
               });
             }
@@ -110,11 +124,11 @@ const ChatBox = ({ apiEndpoint, title }) => {
         },
       ]);
     } finally {
-      setIsTyping(false);
       setIsSubmitting(false);
       scrollToBottom();
     }
   };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !isComposing) {
       event.preventDefault();
@@ -150,36 +164,35 @@ const ChatBox = ({ apiEndpoint, title }) => {
                 msg.sender === "user" ? "justify-end" : "justify-start"
               } mb-2`}
             >
-              <div
-                className={`p-3 rounded-lg ${
-                  msg.sender === "user"
-                    ? "bg-blue-500 text-white max-w-xs"
-                    : "bg-gray-200 text-black max-w-sm"
-                }`}
-              >
-                {msg.sender === "bot" && msg.image && (
-                  <div className="mb-2">
-                    <Image
-                      src={msg.image}
-                      alt="Bot response image"
-                      width={200}
-                      height={200}
-                      className="rounded-lg"
-                    />
-                  </div>
-                )}
-                {msg.text}
-              </div>
+              {msg.image ? (
+                <div
+                  className={`p-3 rounded-lg ${
+                    msg.sender === "user"
+                      ? "bg-blue-500 text-white max-w-xs"
+                      : "bg-gray-200 text-black max-w-sm"
+                  }`}
+                >
+                  <Image
+                    src={msg.image}
+                    alt="Bot response image"
+                    width={200}
+                    height={200}
+                    className="rounded-lg"
+                  />
+                </div>
+              ) : msg.text ? (
+                <div
+                  className={`p-3 rounded-lg ${
+                    msg.sender === "user"
+                      ? "bg-blue-500 text-white max-w-xs"
+                      : "bg-gray-200 text-black max-w-sm"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              ) : null}
             </div>
           ))}
-          {isTyping && (
-            <div className="flex justify-start mb-2">
-              <div className="p-3 rounded-lg bg-gray-200 text-black flex items-center">
-                <div className="w-2.5 h-2.5 bg-gray-500 rounded-full animate-pulse mr-2"></div>
-                <span>입력 중...</span>
-              </div>
-            </div>
-          )}
           <div ref={messagesEndRef} />
         </div>
         <form
