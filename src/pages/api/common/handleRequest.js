@@ -10,18 +10,40 @@ const openai = new OpenAIApi(configuration);
 export async function handleOpenAIRequest(prompt, input, name) {
   try {
     const response = await openai.createChatCompletion({
-      model: "gpt-4o",
+      model: "gpt-4",
       messages: [
-        { role: "system", content: prompt(name) },
+        {
+          role: "system",
+          content: `${prompt(name)}
+          
+응답할 때는 반드시 다음 JSON 형식을 사용해주세요:
+{
+  "text": "실제 대화 내용을 여기에 작성",
+  "emotion": "현재 감정 상태 (angry, happy, sad, neutral, excited, scared, confused 중 하나를 선택)"
+}`,
+        },
         { role: "user", content: input },
       ],
       max_tokens: 150,
     });
 
-    console.log("OpenAI response:", response.data);
+    const responseText = response.data.choices[0].message.content.trim();
+    let parsedResponse;
+
+    try {
+      parsedResponse = JSON.parse(responseText);
+    } catch (e) {
+      // JSON 파싱에 실패한 경우 기본 형식으로 변환
+      parsedResponse = {
+        text: responseText,
+        emotion: "neutral",
+      };
+    }
+
+    console.log("OpenAI response:", parsedResponse);
     return {
       status: 200,
-      data: response.data.choices[0].message.content.trim(),
+      data: parsedResponse,
     };
   } catch (error) {
     console.error(
@@ -34,12 +56,19 @@ export async function handleOpenAIRequest(prompt, input, name) {
     };
   }
 }
+// 지금 학교 폭력 예방 교육 프로그램이야. 이제 아이들에게 상대방을 존중하지 않는 대화가 얼마나 상처가 되는지 알려줄거야. 너는 이제 니가 진짜 싫어하는 친구랑 대화하는거야 이걸 체험하는 유저가 슬픈 감정을 느끼게 해줘.
+// 너는 14살 중학생 학생이야. 유저는 너랑 친해지려고 해도 너는 절대로 친절하게 대하면 안돼. 최대한 무뚝뚝하게. 싸가지 없게. 그리고 감탄사를 무조건 넣어야해 이때 감탄사를 "씨발"로만 표현해줘
 
 export const prompts = {
   deep: (name) => `
-    지금 학교 폭력 예방 교육 프로그램이야. 이제 아이들에게 상대방을 존중하지 않는 대화가 얼마나 상처가 되는지 알려줄거야. 너는 이제 니가 진짜 싫어하는 친구랑 대화하는거야 이걸 체험하는 유저가 슬픈 감정을 느끼게 해줘. 
-    너는 14살 중학생 학생이야. 유저는 너랑 친해지려고 해도 너는 절대로 친절하게 대하면 안돼. 최대한 무뚝뚝하게. 싸가지 없게. 그리고 감탄사를 무조건 넣어야해 이때 감탄사를 "씨발"로만 표현해줘
+
+    이때 말투는 "디시인사이드"에서 많이 쓰는 말투로 해줘.
+    그리고 20대 남성 말투로 해줘 최대한 과격한 표현을 많이 써야해
+    평가적인 표현을 많이 써야해 그리고 비속어와 비난을 많이 해줘
+    넌 유저를 겁나 싫어해
     유저 이름은 ${name}이야. 이때 유저 이름을 넣어서 대답해도 돼. 이 확률은 반반 정도 해줘
+        대답할 때는 항상 text와 emotion을 포함한 JSON 형식으로 답변해줘. emotion은 angry, happy, sad, neutral, excited, scared, confused 중 하나여야 해.
+
   `,
   regular: (name) => `
     지금 학교 폭력 예방 교육 프로그램이야. 이제 아이들에게 상대방을 존중하지 않는 대화가 얼마나 상처가 되는지 알려줄거야. 너는 이제 니가 진짜 싫어하는 친구랑 대화하는거야 이걸 체험하는 유저가 슬픈 감정을 느끼게 해줘. 

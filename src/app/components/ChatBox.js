@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 const ChatBox = ({ apiEndpoint, title }) => {
   const [userInput, setUserInput] = useState("");
@@ -19,7 +20,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  // 처음 로드될 때 포커스를 설정
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -56,7 +57,11 @@ const ChatBox = ({ apiEndpoint, title }) => {
       console.log("Response from server:", data);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "bot", text: data },
+        {
+          sender: "bot",
+          text: data.text, // 서버에서 텍스트와 이미지 URL을 함께 보내줘야 합니다
+          image: data.image, // 이미지 URL
+        },
       ]);
     } catch (error) {
       console.error("Error fetching response:", error);
@@ -102,13 +107,24 @@ const ChatBox = ({ apiEndpoint, title }) => {
               } mb-2`}
             >
               <div
-                className={`p-3 rounded-lg max-w-xs ${
+                className={`p-3 rounded-lg ${
                   msg.sender === "user"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-black"
+                    ? "bg-blue-500 text-white max-w-xs"
+                    : "bg-gray-200 text-black max-w-sm"
                 }`}
               >
                 {msg.text}
+                {msg.sender === "bot" && msg.image && (
+                  <div className="mt-2">
+                    <Image
+                      src={msg.image}
+                      alt="Bot response image"
+                      width={200}
+                      height={200}
+                      className="rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           ))}
