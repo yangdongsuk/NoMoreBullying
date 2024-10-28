@@ -7,38 +7,65 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+// 메시지 기록을 저장할 전역 변수
+let conversationHistory = [];
+let lastEmotion = null; // 최근 감정을 저장하는 변수
+
+const emotions = [
+  "angry",
+  "happy",
+  "sad",
+  "neutral",
+  "excited",
+  "scared",
+  "confused",
+];
+
 export async function handleOpenAIRequest(prompt, input, name) {
   try {
+    // 새 메시지를 대화 기록에 추가
+    conversationHistory.push({ role: "user", content: `${name}: ${input}` });
+
+    // OpenAI API 요청
     const response = await openai.createChatCompletion({
       model: "gpt-4",
       messages: [
-        {
-          role: "system",
-          content: `${prompt(name)}
-          
-응답할 때는 반드시 다음 JSON 형식을 사용해주세요:
-{
-  "text": "실제 대화 내용을 여기에 작성",
-  "emotion": "현재 감정 상태 (angry, happy, sad, neutral, excited, scared, confused 중 하나를 선택)"
-}`,
-        },
-        { role: "user", content: input },
+        { role: "system", content: prompt(name) },
+        ...conversationHistory,
       ],
       max_tokens: 150,
     });
 
     const responseText = response.data.choices[0].message.content.trim();
-    let parsedResponse;
 
+    // JSON 파싱 시도
+    let parsedResponse;
     try {
       parsedResponse = JSON.parse(responseText);
     } catch (e) {
-      // JSON 파싱에 실패한 경우 기본 형식으로 변환
       parsedResponse = {
         text: responseText,
         emotion: "neutral",
       };
     }
+
+    // 감정이 이전과 같다면 다른 감정을 무작위로 선택
+    if (parsedResponse.emotion === lastEmotion) {
+      const otherEmotions = emotions.filter(
+        (emotion) => emotion !== lastEmotion
+      );
+      parsedResponse.emotion =
+        otherEmotions[Math.floor(Math.random() * otherEmotions.length)];
+    }
+
+    // 마지막 감정을 업데이트
+    lastEmotion = parsedResponse.emotion;
+
+    // GPT 응답을 대화 기록에 추가
+    conversationHistory.push({
+      role: "assistant",
+      content: parsedResponse.text,
+    });
 
     console.log("OpenAI response:", parsedResponse);
     return {
