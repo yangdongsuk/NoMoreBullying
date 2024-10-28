@@ -7,70 +7,21 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-// 메시지 기록을 저장할 전역 변수
-let conversationHistory = [];
-let lastEmotion = null; // 최근 감정을 저장하는 변수
-
-const emotions = [
-  "angry",
-  "happy",
-  "sad",
-  "neutral",
-  "excited",
-  "scared",
-  "confused",
-];
-
 export async function handleOpenAIRequest(prompt, input, name) {
   try {
-    // 새 메시지를 대화 기록에 추가
-    conversationHistory.push({ role: "user", content: `${name}: ${input}` });
-
-    // OpenAI API 요청
     const response = await openai.createChatCompletion({
-      model: "gpt-4",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: prompt(name) },
-        ...conversationHistory,
+        { role: "user", content: input },
       ],
       max_tokens: 150,
     });
 
-    const responseText = response.data.choices[0].message.content.trim();
-
-    // JSON 파싱 시도
-    let parsedResponse;
-    try {
-      parsedResponse = JSON.parse(responseText);
-    } catch (e) {
-      parsedResponse = {
-        text: responseText,
-        emotion: "neutral",
-      };
-    }
-
-    // 감정이 이전과 같다면 다른 감정을 무작위로 선택
-    if (parsedResponse.emotion === lastEmotion) {
-      const otherEmotions = emotions.filter(
-        (emotion) => emotion !== lastEmotion
-      );
-      parsedResponse.emotion =
-        otherEmotions[Math.floor(Math.random() * otherEmotions.length)];
-    }
-
-    // 마지막 감정을 업데이트
-    lastEmotion = parsedResponse.emotion;
-
-    // GPT 응답을 대화 기록에 추가
-    conversationHistory.push({
-      role: "assistant",
-      content: parsedResponse.text,
-    });
-
-    console.log("OpenAI response:", parsedResponse);
+    console.log("OpenAI response:", response.data);
     return {
       status: 200,
-      data: parsedResponse,
+      data: response.data.choices[0].message.content.trim(),
     };
   } catch (error) {
     console.error(
@@ -94,8 +45,6 @@ export const prompts = {
     평가적인 표현을 많이 써야해 그리고 비속어와 비난을 많이 해줘
     넌 유저를 겁나 싫어해
     유저 이름은 ${name}이야. 이때 유저 이름을 넣어서 대답해도 돼. 이 확률은 반반 정도 해줘
-        대답할 때는 항상 text와 emotion을 포함한 JSON 형식으로 답변해줘. emotion은 angry, happy, sad, neutral, excited, scared, confused 중 하나여야 해.
-
   `,
   regular: (name) => `
     지금 학교 폭력 예방 교육 프로그램이야. 이제 아이들에게 상대방을 존중하지 않는 대화가 얼마나 상처가 되는지 알려줄거야. 너는 이제 니가 진짜 싫어하는 친구랑 대화하는거야 이걸 체험하는 유저가 슬픈 감정을 느끼게 해줘. 
@@ -126,6 +75,5 @@ export const prompts = {
     Use lots of evaluative expressions, profanity, and insults.
     Always respond in Korean.
     The user's name is ${name}. You may include the user's name in your responses. Make this happen about half the time.
-    When responding, always answer in JSON format including 'text' and 'emotion'. Emotion must be one of angry, happy, sad, neutral, excited, scared, confused.
   `,
 };
