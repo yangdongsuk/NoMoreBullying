@@ -147,7 +147,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-      <div className="flex flex-col w-full h-screen md:h-[600px] md:w-[400px] bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="flex flex-col w-full h-screen md:h-[900px] md:w-[500px] bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex justify-between items-center">
           <h1 className="text-base sm:text-lg font-bold">{title}</h1>
           <Link href="/" legacyBehavior>
