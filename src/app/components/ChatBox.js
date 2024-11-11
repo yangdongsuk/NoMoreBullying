@@ -44,7 +44,9 @@ const ChatBox = ({ apiEndpoint, title }) => {
 
     try {
       // 이미지를 가져옵니다
-      const imageRes = await fetch("/api/get-random-image");
+      // 엔드포인트를 쿼리 파람으로 전달하여 이미지를 가져옵니다
+      // GET /api/get-random-image?type=/api/counseling-response
+      const imageRes = await fetch(`/api/get-random-image?type=${apiEndpoint}`);
       const imageData = await imageRes.json();
 
       // 이미지 메시지를 분리하여 추가
