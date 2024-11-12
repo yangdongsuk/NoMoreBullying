@@ -24,6 +24,12 @@ export default function handler(req, res) {
     const imagePath = `/images/programmer.jpg`;
     res.status(200).json({ image: imagePath });
   }
+  // /api/report-response
+  if (type === "/api/report-response") {
+    const imagePath = `/images/report.jpg`;
+
+    res.status(200).json({ image: imagePath });
+  }
 
   const randomImage = Math.floor(Math.random() * 19) + 1;
   const imagePath = `/images/happy_karina/${randomImage}.jpg`;
