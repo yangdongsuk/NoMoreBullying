@@ -92,7 +92,7 @@ export default function HomePage() {
               link={chatExperiencePaths.counseling}
               buttonText="상담 시작하기"
             />
-            <Card
+            {/* <Card
               image="/images/programmer.jpg"
               title="피곤한 개발자"
               description="대규모 장애 때매 3일간 잠을 못 잔 백엔드 개발자랑 이야기하며 행복해져보세요."
@@ -105,7 +105,7 @@ export default function HomePage() {
               description="여자친구랑 이야기하며 행복해져보세요."
               link={chatExperiencePaths.girlfriend}
               buttonText="대화 시작하기"
-            />
+            /> */}
             <Card
               image="/images/quiz.jpg"
               title="OX 퀴즈"

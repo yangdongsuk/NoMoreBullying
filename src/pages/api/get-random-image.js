@@ -13,7 +13,10 @@ export default function handler(req, res) {
     res.status(200).json({ image: imagePath });
   }
   // /api/bullying-deep-response
-  if (type === "/api/bullying-deep-response") {
+  if (
+    type === "/api/bullying-deep-response" ||
+    type === "/api/bullying-response"
+  ) {
     const randomImage = Math.floor(Math.random() * 8) + 1;
     const imagePath = `/images/bully/${randomImage}.jpg`;
 
@@ -27,6 +30,16 @@ export default function handler(req, res) {
   // /api/report-response
   if (type === "/api/report-response") {
     const imagePath = `/images/report.jpg`;
+
+    res.status(200).json({ image: imagePath });
+  }
+  if (type === "/api/counseling-response") {
+    const imagePath = `/images/oh.jpg`;
+
+    res.status(200).json({ image: imagePath });
+  }
+  if (type === "/api/victim-response") {
+    const imagePath = `/images/sad.jpg`;
 
     res.status(200).json({ image: imagePath });
   }
