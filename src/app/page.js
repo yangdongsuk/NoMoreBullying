@@ -13,6 +13,7 @@ export default function HomePage() {
     programmer: "",
     girlfriend: "",
     bully: "",
+    nasdaq: "",
   });
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function HomePage() {
       counseling: generatePath("counseling"),
       programmer: generatePath("programmer"),
       girlfriend: generatePath("girlfriend"),
+      nasdaq: generatePath("nasdaq"),
     });
   }, [name]);
 
@@ -77,6 +79,13 @@ export default function HomePage() {
               description="일진 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
               link={chatExperiencePaths.bully}
               buttonText="일진 채팅 체험 시작하기"
+            />
+            <Card
+              image="/images/bully.jpg"
+              title="나스닥 물린 일진 채팅 체험"
+              description="나스닥 물린 일진 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
+              link={chatExperiencePaths.nasdaq}
+              buttonText="나스닥 물린 일진 채팅 체험 시작하기"
             />
             <Card
               image="/images/victim.jpg"
