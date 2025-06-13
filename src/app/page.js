@@ -35,7 +35,7 @@ export default function HomePage() {
   }, [name]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-gradient-to-r from-slate-200 to-slate-300">
+    <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
       <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center">
           <h1 className="text-3xl font-bold">사이버 폭력 통합 사이트</h1>
@@ -45,7 +45,6 @@ export default function HomePage() {
             {name.trim() !== "" ? (
               <Card
                 image="/images/user_welcome.jpg"
-                icon="public/images/user.svg"
                 title="이름 변경"
                 description={`${name}님 반갑습니다!`}
                 link="/enter-name"
@@ -62,7 +61,6 @@ export default function HomePage() {
             )}
             <Card
               image="/images/ai_chatbot.jpg"
-              icon="public/images/chat-bubble-left-right.svg"
               title="기본 채팅 체험"
               description="기본 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
               link={chatExperiencePaths.basic}
@@ -70,7 +68,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/deep_ai_chatbot.jpg"
-              icon="public/images/chat-bubble-left-ellipsis.svg"
               title="심층 채팅 체험"
               description="심층 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요. (욕설 나올 가능성이 높습니다.)"
               link={chatExperiencePaths.deep}
@@ -78,7 +75,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/bully.jpg"
-              icon="public/images/chat-bubble-oval-left-ellipsis.svg"
               title="일진 채팅 체험"
               description="일진 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
               link={chatExperiencePaths.bully}
@@ -86,7 +82,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/bully.jpg"
-              icon="public/images/arrow-trending-down.svg"
               title="나스닥 물린 일진 채팅 체험"
               description="나스닥 물린 일진 채팅 체험을 통해 사이버 폭력의 심각성을 느껴보세요."
               link={chatExperiencePaths.nasdaq}
@@ -94,7 +89,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/victim.jpg"
-              icon="public/images/heart.svg"
               title="피해자 위로해주기"
               description="학교 폭력 피해자를 채팅으로 위로해주세요."
               link={chatExperiencePaths.victim}
@@ -102,7 +96,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/counseling.jpg"
-              icon="public/images/lifebuoy.svg"
               title="학교 폭력 상담"
               description="학교 폭력 상담입니다. 자신의 이야기를 들려주세요."
               link={chatExperiencePaths.counseling}
@@ -110,7 +103,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/programmer.jpg"
-              icon="public/images/cpu-chip.svg"
               title="피곤한 개발자"
               description="대규모 장애 때매 3일간 잠을 못 잔 백엔드 개발자랑 이야기하며 행복해져보세요."
               link={chatExperiencePaths.programmer}
@@ -118,7 +110,6 @@ export default function HomePage() {
             />
             <Card
               image="/images/girlfriend.jpg"
-              icon="public/images/user.svg"
               title="여자친구"
               description="여자친구랑 이야기하며 행복해져보세요."
               link={chatExperiencePaths.girlfriend}
