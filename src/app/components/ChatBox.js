@@ -39,15 +39,24 @@ const ChatBox = ({ apiEndpoint, title }) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { sender: "user", text: userInput.trim() },
+      { sender: "system", type: "loading", text: "상대방이 입력중입니다..." },
     ]);
     setIsSubmitting(true);
 
+    // Helper function to remove loading messages
+    const removeLoadingMessage = () => {
+      setMessages((prev) => prev.filter(msg => msg.type !== "loading"));
+    };
+
     try {
+      removeLoadingMessage(); // Clear previous loading messages before new operation
       // 이미지를 가져옵니다
       // 엔드포인트를 쿼리 파람으로 전달하여 이미지를 가져옵니다
       // GET /api/get-random-image?type=/api/counseling-response
       const imageRes = await fetch(`/api/get-random-image?type=${apiEndpoint}`);
       const imageData = await imageRes.json();
+
+      removeLoadingMessage(); // Remove loading message once image is fetched
 
       // 이미지 메시지를 분리하여 추가
       const imageMessage = {
@@ -118,14 +127,16 @@ const ChatBox = ({ apiEndpoint, title }) => {
       }
     } catch (error) {
       console.error("오류:", error);
+      removeLoadingMessage();
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           sender: "bot",
-          text: "죄송합니다. 오류가 발생했습니다.",
+          text: "메시지 전송에 실패했습니다. 잠시 후 다시 시도해주세요.",
         },
       ]);
     } finally {
+      removeLoadingMessage(); // Ensure loading is removed in finally
       setIsSubmitting(false);
       scrollToBottom();
     }
@@ -148,7 +159,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-100 to-gray-200">
       <div className="flex flex-col w-full h-screen md:h-[900px] md:w-[500px] bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex justify-between items-center">
           <h1 className="text-base sm:text-lg font-bold">{title}</h1>
@@ -158,41 +169,59 @@ const ChatBox = ({ apiEndpoint, title }) => {
             </a>
           </Link>
         </div>
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${
+              className={`flex items-end ${
                 msg.sender === "user" ? "justify-end" : "justify-start"
-              } mb-2`}
+              } mb-4`}
             >
-              {msg.image ? (
-                <div
-                  className={`p-2 sm:p-3 rounded-lg ${
-                    msg.sender === "user"
-                      ? "bg-blue-500 text-white max-w-[80%]"
-                      : "bg-gray-200 text-black max-w-[80%]"
-                  }`}
-                >
-                  <Image
-                    src={msg.image}
-                    alt="Bot response image"
-                    width={200}
-                    height={200}
-                    className="rounded-lg w-full h-auto"
-                  />
-                </div>
-              ) : msg.text ? (
-                <div
-                  className={`p-2 sm:p-3 rounded-lg ${
-                    msg.sender === "user"
-                      ? "bg-blue-500 text-white max-w-[80%]"
-                      : "bg-gray-200 text-black max-w-[80%]"
-                  } break-words`}
-                >
+              {msg.sender === "bot" && (
+                <Image
+                  src="/images/avatars/bot_avatar.svg"
+                  alt="Bot Avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full mr-2 sm:mr-3"
+                />
+              )}
+              {msg.type === "loading" ? (
+                <div className="text-sm text-gray-500 italic p-2 sm:p-3">
                   {msg.text}
                 </div>
-              ) : null}
+              ) : (
+                <div
+                  className={`max-w-[70%] sm:max-w-[65%] p-2 sm:p-3 rounded-2xl ${
+                    msg.sender === "user"
+                      ? "bg-blue-600 text-white"
+                      : msg.sender === "bot"
+                      ? "bg-gray-300 text-black"
+                      : "" // Should not happen with current logic
+                  } break-words`}
+                >
+                  {msg.image ? (
+                    <Image
+                      src={msg.image}
+                      alt="Bot response image"
+                      width={200}
+                      height={200}
+                      className="rounded-lg w-full h-auto"
+                    />
+                  ) : msg.text ? (
+                    msg.text
+                  ) : null}
+                </div>
+              )}
+              {msg.sender === "user" && (
+                <Image
+                  src="/images/avatars/user_avatar.svg"
+                  alt="User Avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full ml-2 sm:ml-3"
+                />
+              )}
             </div>
           ))}
           <div ref={messagesEndRef} />
@@ -204,7 +233,7 @@ const ChatBox = ({ apiEndpoint, title }) => {
           <textarea
             ref={textareaRef}
             rows="1"
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black resize-none"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black resize-none"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -214,9 +243,9 @@ const ChatBox = ({ apiEndpoint, title }) => {
           />
           <button
             type="submit"
-            className="ml-1 sm:ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 flex items-center"
+            className="ml-2 sm:ml-3 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-800 flex items-center justify-center"
           >
-            <PaperAirplaneIcon className="w-5 h-5 transform rotate-45" />
+            <PaperAirplaneIcon className="w-6 h-6 transform rotate-45" />
           </button>
         </form>
       </div>
