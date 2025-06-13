@@ -14,6 +14,9 @@ export default function HomePage() {
     girlfriend: "",
     bully: "",
     nasdaq: "",
+    shakespearean: "",
+    conspiracy: "",
+    passiveAggressive: "",
   });
 
   useEffect(() => {
@@ -31,6 +34,9 @@ export default function HomePage() {
       programmer: generatePath("programmer"),
       girlfriend: generatePath("girlfriend"),
       nasdaq: generatePath("nasdaq"),
+      shakespearean: generatePath("shakespearean"),
+      conspiracy: generatePath("conspiracy"),
+      passiveAggressive: generatePath("passive-aggressive"),
     });
   }, [name]);
 
@@ -128,6 +134,27 @@ export default function HomePage() {
               description="사이버 폭력 사건을 신고하고 도움을 받을 수 있는 시스템입니다."
               link="/report"
               buttonText="신고 시스템 이용하기"
+            />
+            <Card
+              image="/images/shakespearean/1.jpg"
+              title="셰익스피어 배우와 대화"
+              description="과장된 셰익스피어 연극톤으로 대화해보세요! 모든 것이 비극 아니면 희극!"
+              link={chatExperiencePaths.shakespearean}
+              buttonText="셰익스피어와 대화 시작"
+            />
+            <Card
+              image="/images/conspiracy/1.jpg"
+              title="음모론자와 대화"
+              description="세상의 모든 비밀을 파헤치는 음모론자와 대화하며 숨겨진 진실을 찾아보세요!"
+              link={chatExperiencePaths.conspiracy}
+              buttonText="음모론자와 대화 시작"
+            />
+            <Card
+              image="/images/passive_aggressive/1.jpg"
+              title="수동적 공격적인 친구와 대화"
+              description="뼈 있는 칭찬과 은근한 비꼼이 특기인 친구와 즐거운(?) 대화를 나눠보세요."
+              link={chatExperiencePaths.passiveAggressive}
+              buttonText="친구와 대화 시작"
             />
           </div>
         </div>
