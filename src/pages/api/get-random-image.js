@@ -44,6 +44,24 @@ export default function handler(req, res) {
     res.status(200).json({ image: imagePath });
   }
 
+  if (type === "/api/shakespearean-actor-response") {
+    const randomImage = Math.floor(Math.random() * 2) + 1;
+    const imagePath = `/images/shakespearean/${randomImage}.jpg`;
+    return res.status(200).json({ image: imagePath });
+  }
+
+  if (type === "/api/conspiracy-theorist-response") {
+    const randomImage = Math.floor(Math.random() * 2) + 1;
+    const imagePath = `/images/conspiracy/${randomImage}.jpg`;
+    return res.status(200).json({ image: imagePath });
+  }
+
+  if (type === "/api/passive-aggressive-complimenter-response") {
+    const randomImage = Math.floor(Math.random() * 2) + 1;
+    const imagePath = `/images/passive_aggressive/${randomImage}.jpg`;
+    return res.status(200).json({ image: imagePath });
+  }
+
   const randomImage = Math.floor(Math.random() * 19) + 1;
   const imagePath = `/images/happy_karina/${randomImage}.jpg`;
 
